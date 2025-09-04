@@ -99,28 +99,28 @@ WSGI_APPLICATION = 'ecs.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
-if 'RDS_HOSTNAME' in os.environ:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': 'postgres',
-            'USER': 'postgres',
-            'PASSWORD': secrets['DATABASE_PASSWORD'],
-            'HOST': os.environ['RDS_HOSTNAME'],
-            'PORT': '5432',
-        }
+# if 'RDS_HOSTNAME' in os.environ:
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': secrets['NAME'],
+        'USER': secrets['User'],
+        'PASSWORD': secrets['DATABASE_PASSWORD'],
+        'HOST': secrets['RDS_HOSTNAME'],
+        'PORT': '5432',
     }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': 'postgres',
-            'USER': 'postgres',
-            'PASSWORD': secrets['DATABASE_PASSWORD'],
-            'HOST': 'awseb-e-bparfxz5w4-stack-awsebrdsdatabase-wnezjup11xlx.c1guujpkpu7r.ap-south-1.rds.amazonaws.com',
-            'PORT': '5432',
-        }
-    }
+}
+# else:
+#     DATABASES = {
+#         'default': {
+#             'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#             'NAME': 'postgres',
+#             'USER': 'postgres',
+#             'PASSWORD': secrets['DATABASE_PASSWORD'],
+#             'HOST': 'awseb-e-bparfxz5w4-stack-awsebrdsdatabase-wnezjup11xlx.c1guujpkpu7r.ap-south-1.rds.amazonaws.com',
+#             'PORT': '5432',
+#         }
+#     }
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -200,8 +200,9 @@ CRONJOBS = [
 
 SILENCED_SYSTEM_CHECKS = ['models.W042','models.W04','models.W042','fields.E010']
 
+GOOGLE_APPLICATION_CREDENTIALS = os.path.join(BASE_DIR, "ecs", "ecs-fcm-915e0-firebase-adminsdk-fbsvc-af60fccc68.json")
 if not firebase_admin._apps:
-    cred = credentials.Certificate(os.path.join(BASE_DIR, secrets['FIREBASE_CREDENTIALS']))
+    cred = credentials.Certificate(GOOGLE_APPLICATION_CREDENTIALS)
     FIREBASE_APP = firebase_admin.initialize_app(cred)
 
 # fcm-django or pyfcm legacy key (optional, can remove if only using firebase_admin)
